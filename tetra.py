@@ -20,12 +20,17 @@ class Interpreter:
     def run(self):
         for opcode in self.code.bytecode:
             if opcode[0] == Opcode.ADD:
-                a = self.stack.pop() # Pop the top object in stack
-                b = self.stack.pop()
+                a = self.stack.pop() 
+                b = self.stack.pop() 
                 self.stack.append(a + b)
-            elif opcode[0] == Opcode.LOAD_CONST: # Integer
+            elif opcode[0] == Opcode.SUB:
+                a = self.stack.pop()
+                b = self.stack.pop()
+                self.stack.append(a - b) # TODO: Check if it doesn't have to be `b - a`
+            elif opcode[0] == Opcode.LOAD_CONST:
                 self.stack.append(self.code.consts[opcode[1]])
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
+            
 
 
