@@ -1,22 +1,30 @@
-from enum import Enum, auto
+from tokens import *
+import re, typing
 
-class Token(Enum):
-    NUMBER = auto()
-    PLUS = auto()
-    MINUS = auto()
+def group(*regexs): return "(" + "|".join(regexs) + ")" # still dont get wat it does after this
 
-class TokenInfo:
-    def __init__(self, token_type: Token, value, line: int, column: int):
-        self.token_type = token_type
-        self.value = value
-        self.column = column
-        self.line = line
+NUMBER = r'\d'
+PLUS = r'\+'
+MINUS = r'-'
+ALL = re.compile(group(NUMBER, PLUS, MINUS))
+
+class Tokenizer:
+    def __init__(self,source: str):
+        self.source = source
     
-    def __getitem__(self, key):
-        if isinstance(key, str):
-            return self.__dict__[key]
-        elif isinstance(key, int):
-            return list(self.__dict__.values())[key]
-        else:
-            raise KeyError("Invalid key type")
+    def parse_line(self, line, lineo) -> typing.List[re.Match]:
+        tokens = []
+        for match in ALL.finditer(line):
+            print(match.re)
+            # tokens.append(TokenInfo(Token.NUMBER, token.group(), token.start(), lineo))
         
+        # (token.start(), token.group()) for token in re.finditer(r"\S+")
+    def parse_file(self):
+        for i, line in enumerate(self.source.splitlines()):
+            self.parse_line(line, i)
+            
+    def tokenize(self) -> typing.List[TokenInfo]: 
+        tokens = []
+
+# parse("2 + 2")
+# -> [TokenInfo(Token.NUMBER, 2, 1, 0), TokenInfo(Token.PLUS, '+', 1, 3), TokenInfo(Token.NUMBER, 2, 1, 5)]
