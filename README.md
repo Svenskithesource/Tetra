@@ -1,2 +1,2 @@
 # Tetra
-A interpreted language written in Python
+A interpreted language, written in Python
