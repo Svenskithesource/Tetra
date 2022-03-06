@@ -1,4 +1,4 @@
 # Tetra
 👋 Introduction 👋
 
-An basic interpreted language, written in Python!
+A basic interpreted language, written in Python!
