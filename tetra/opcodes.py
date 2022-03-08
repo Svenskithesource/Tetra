@@ -9,6 +9,8 @@ from enum import Enum, auto
 class Opcode(Enum):
     ADD = auto()
     SUB = auto()
+    MUL = auto()
+    DIV = auto()
     LOAD_CONST = auto()
     DUMP = auto()
 

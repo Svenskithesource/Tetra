@@ -6,24 +6,34 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 
 import typing, tokens
 
+class AST:
+    """The main class which all nodes will inherit from.
+    """
+    pass
 
-class IntegerLiteral:
+class IntegerLiteral(AST):
     def __init__(self, value: int):
         self.value = value
 
-class Add:
+class Add(AST):
     def __init__(self, left: IntegerLiteral, right: IntegerLiteral):
         self.left = left
         self.right = right
 
-class Sub:
+class Sub(AST):
     def __init__(self, left: IntegerLiteral, right: IntegerLiteral):
         self.left = left
         self.right = right
 
-class Module:
+class Module(AST):
     def __init__(self, name: str, body: typing.List):
         self.name = name
         self.body = body
     
-
+class Parser:
+    def __init__(self, tokens: typing.Generator):
+        self.tokens = tokens
+        self.cur_token = tokens.next()
+    
+    def error(self, msg: str):
+        raise SyntaxError(msg)
