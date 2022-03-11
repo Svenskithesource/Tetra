@@ -14,6 +14,18 @@ PLUS = r'\+'
 MINUS = r'-'
 ALL = re.compile(group(NUMBER, PLUS, MINUS))
 
+class TokenStream:
+    def __init__(self, tokens: typing.List):
+        self.tokens = tokens
+        self.index = 0
+    
+    def next(self):
+        if self.index >= len(self.tokens):
+            raise StopIteration
+        else:
+            self.index += 1
+            return self.tokens[self.index - 1]
+
 class Tokenizer:
     def __init__(self,source: str):
         self.source = source

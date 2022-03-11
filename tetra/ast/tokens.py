@@ -14,6 +14,7 @@ class Token(Enum):
     MINUS = auto()
     MUL = auto()
     DIV = auto()
+    EOF = auto()
 
 class TokenInfo:
     def __init__(self, token_type: Token, value, line: int, column: int):
