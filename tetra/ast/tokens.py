@@ -23,6 +23,9 @@ class TokenInfo:
         self.column = column
         self.line = line
     
+    def __str__(self):
+        return f"TokenInfo(token_type={self.token_type}, value={self.value}, line={self.line}, column={self.column})"
+
     def __getitem__(self, key): # so you can e.g. do token[0] or token["token_type"]
         if isinstance(key, str):
             return self.__dict__[key]

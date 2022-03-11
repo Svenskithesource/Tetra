@@ -4,7 +4,7 @@ An interpreted language
 Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https://github.com/jaxp2)
 """
 
-from tokens import *
+from tetra.ast.tokens import *
 import re, typing
 
 def group(*regexs): return "(" + "|".join(regexs) + ")" # still dont get wat it does after this

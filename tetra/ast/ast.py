@@ -17,7 +17,8 @@ class AST:
         return '\n    '.join(lines)
 
 class IntegerLiteral(AST):
-    def __init__(self, value: int):
+    def __init__(self, index, value: int):
+        self.index = index
         self.value = value
 
 class Add(AST):
@@ -41,12 +42,14 @@ class Div(AST):
         self.right = right
 
 class Module(AST):
-    def __init__(self, name: str, body: typing.List):
+    def __init__(self, name: str, body: typing.List, constants: typing.List):
         self.name = name
         self.body = body
+        self.constants = constants
     
 class Parser:
     def __init__(self, tokens: typing.Generator):
+        self.constants = []
         self.tokens = tokens
         self.cur_token = tokens.next()
     
@@ -54,6 +57,7 @@ class Parser:
         raise SyntaxError(msg)
     
     def eat(self, token_type: Token):
+        print(self.cur_token)
         if self.cur_token.token_type == token_type:
             self.cur_token = self.tokens.next()
         else:
@@ -62,8 +66,10 @@ class Parser:
     def factor(self):
         """factor ::= INTEGER
         """
-
-        node = IntegerLiteral(self.cur_token.value)
+        
+        if not self.cur_token.value in self.constants:
+            self.constants.append(self.cur_token.value)
+        node = IntegerLiteral(self.constants.index(self.cur_token.value), self.cur_token.value)
         self.eat(Token.NUMBER)
         return node
 
@@ -83,7 +89,6 @@ class Parser:
             else:
                 self.error("Unknown operator")
 
-            
         return node
 
     def expr(self):
@@ -104,21 +109,5 @@ class Parser:
         return node
     
     def parse(self):
-        return Module("test", self.expr())
+        return Module("test", self.expr(), self.constants)
     
-class TokenStream:
-    def __init__(self, tokens: typing.List):
-        self.tokens = tokens
-        self.index = 0
-    
-    def next(self):
-        if self.index >= len(self.tokens):
-            raise StopIteration
-        else:
-            self.index += 1
-            return self.tokens[self.index - 1]
-
-        
-
-parser = Parser(TokenStream([TokenInfo(Token.NUMBER, 1, 0, 0), TokenInfo(Token.PLUS, "+", 0, 0), TokenInfo(Token.NUMBER, 2, 0, 0), TokenInfo(Token.MUL, "*", 0, 0), TokenInfo(Token.NUMBER, 2, 0, 0), TokenInfo(Token.EOF, None, 0, 0)]))
-print(parser.parse())
