@@ -7,12 +7,13 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 from tetra.ast.tokens import *
 import re, typing
 
-def group(*regexs): return "(" + "|".join(regexs) + ")" # still dont get wat it does after this
+NUMBER = re.compile(r'\d')
+PLUS = re.compile(r'\+')
+MINUS = re.compile(r'-')
+MUL = re.compile(r'\*')
+DIV = re.compile(r'/')
 
-NUMBER = r'\d'
-PLUS = r'\+'
-MINUS = r'-'
-ALL = re.compile(group(NUMBER, PLUS, MINUS))
+ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV}
 
 class TokenStream:
     def __init__(self, tokens: typing.List):
@@ -25,24 +26,36 @@ class TokenStream:
         else:
             self.index += 1
             return self.tokens[self.index - 1]
+    
+    def __str__(self) -> str:
+        return str(self.tokens)
 
 class Tokenizer:
     def __init__(self,source: str):
         self.source = source
-    
-    def parse_line(self, line, lineo) -> typing.List[re.Match]:
+
+    def parse_line(self, line, lineo) -> typing.List[TokenInfo]:
         tokens = []
-        for match in ALL.finditer(line):
-            print(match.re)
-            # tokens.append(TokenInfo(Token.NUMBER, token.group(), token.start(), lineo))
+        for i, regex in enumerate(ALL.values()):
+            pos = 0
+            while True:
+                match = regex.search(line, pos)
+                if match:
+                    pos = match.end()
+                    tokens.append(TokenInfo(getattr(Token, list(ALL.keys())[i]), match.group(0), lineo, match.start()))
+                else:
+                    break
         
-        # (token.start(), token.group()) for token in re.finditer(r"\S+")
-    def parse_file(self):
-        for i, line in enumerate(self.source.splitlines()):
-            self.parse_line(line, i)
+        tokens.sort(key=lambda x: x.column)
+
+        return tokens
             
-    def tokenize(self) -> typing.List[TokenInfo]: 
-        tokens = []
+    def tokenize(self) -> TokenStream: 
+        tokens = self.parse_line(self.source, 0)
+        tokens.append(TokenInfo(Token.EOF, None, 0, 0))
+        return TokenStream(tokens)
+
+
 
 # parse("2 + 2")
 # -> [TokenInfo(Token.NUMBER, 2, 1, 0), TokenInfo(Token.PLUS, '+', 1, 3), TokenInfo(Token.NUMBER, 2, 1, 5)]

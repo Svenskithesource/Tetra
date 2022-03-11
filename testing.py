@@ -10,10 +10,13 @@ from tetra.ast.tokenizer import TokenStream
 from tetra.bytecode.parser import Parser as BytecodeParser
 from tetra.bytecode.opcodes import Opcode
 import tetra.tetra as tetra
+from tetra.ast.tokenizer import *
 
-parser = Parser(TokenStream([TokenInfo(Token.NUMBER, 1, 0, 0), TokenInfo(Token.PLUS, "+", 0, 0), TokenInfo(Token.NUMBER, 2, 0, 0), TokenInfo(Token.MUL, "*", 0, 0), TokenInfo(Token.NUMBER, 2, 0, 0), TokenInfo(Token.EOF, None, 0, 0)]))
+tokens = Tokenizer("1 + 2 * 3").tokenize()
+
+parser = Parser(tokens)
 
 code = BytecodeParser(parser.parse()).parse()
 code.bytecode.append((Opcode.DUMP, None))
-print(code)
+
 tetra.Interpreter(code).run()

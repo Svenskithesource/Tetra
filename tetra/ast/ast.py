@@ -57,7 +57,6 @@ class Parser:
         raise SyntaxError(msg)
     
     def eat(self, token_type: Token):
-        print(self.cur_token)
         if self.cur_token.token_type == token_type:
             self.cur_token = self.tokens.next()
         else:
@@ -68,8 +67,8 @@ class Parser:
         """
         
         if not self.cur_token.value in self.constants:
-            self.constants.append(self.cur_token.value)
-        node = IntegerLiteral(self.constants.index(self.cur_token.value), self.cur_token.value)
+            self.constants.append(int(self.cur_token.value))
+        node = IntegerLiteral(self.constants.index(int(self.cur_token.value)), int(self.cur_token.value))
         self.eat(Token.NUMBER)
         return node
 
