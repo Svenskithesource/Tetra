@@ -27,3 +27,9 @@ class TestTetra(unittest.TestCase):
     def test_div_by_zero(self):
         with self.assertRaises(ZeroDivisionError):
             tetra.Interpreter("1 / 0").run()
+
+    def test_var(self):
+        interpreter = tetra.Interpreter("a = 1")
+        interpreter.run()
+        self.assertEqual(interpreter.heap[0], 1)
+        self.assertEqual(interpreter.code.vars[0], "a")
