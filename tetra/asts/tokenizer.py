@@ -14,9 +14,9 @@ MUL = re.compile(r'\*')
 DIV = re.compile(r'/')
 LPARAN = re.compile(r'\(')
 RPARAN = re.compile(r'\)')
-VAR = re.compile(r'^[^\s][^0-9][a-zA-Z0-9_]+[^\s]$')
+NAME = re.compile(r"(?!\d+)\w+")
 EQUAL = re.compile(r'=')
-ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAN": LPARAN, "RPARAN": RPARAN, "VAR": VAR, "EQUAL": EQUAL}
+ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAN": LPARAN, "RPARAN": RPARAN, "NAME": NAME, "EQUAL": EQUAL}
 
 class TokenStream:
     """Behaves like a generator
