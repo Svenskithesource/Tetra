@@ -18,13 +18,14 @@ class Interpreter:
     def __init__(self, source: str):
         self.source = source
         self.stack = [] 
+        self.heap = []
 
     def run(self):
         tokens = Tokenizer(self.source).tokenize()
 
-        parser = Parser(tokens)
+        parser = Parser(tokens).parse()
 
-        code = BytecodeParser(parser.parse()).parse()
+        code = BytecodeParser(parser).parse()
 
         self.code = code
         return self.execute()
@@ -49,8 +50,14 @@ class Interpreter:
                 self.stack.append(b // a) # we use // (floor division) because we only support integers for now, also raises an ZeroDivisionError if b == 0 (done by Python)
             elif opcode[0] == Opcode.LOAD_CONST:
                 self.stack.append(self.code.consts[opcode[1]])
+            elif opcode[0] == Opcode.STORE_VAR:
+                a = self.stack.pop()
+                if len(self.heap) - 1 < opcode[1]:
+                    self.heap.append(a)
+                else: 
+                    self.heap[opcode[1]] = a
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
         
-        return self.stack.pop() # the last item on the stack is the result of the program
+        return self.stack.pop() if self.stack else None # the last item on the stack is the result of the program, if the stack is empty return None
             

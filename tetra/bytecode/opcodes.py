@@ -12,5 +12,6 @@ class Opcode(Enum):
     MUL = auto()
     DIV = auto()
     LOAD_CONST = auto()
+    STORE_VAR = auto()
     DUMP = auto()
 

@@ -17,6 +17,11 @@ class AST:
             lines += '{}: {}'.format(key, val).split('\n')
         return '\n    '.join(lines)
 
+class Store(AST):
+    def __init__(self, index, value):
+        self.index = index
+        self.value = value
+
 class IntegerLiteral(AST):
     def __init__(self, index, value: int):
         self.index = index
@@ -43,15 +48,17 @@ class Div(AST):
         self.right = right
 
 class Module(AST):
-    def __init__(self, name: str, body: typing.List, constants: typing.List):
+    def __init__(self, name: str, body: typing.List, constants: typing.List, vars: typing.List[str]):
         self.name = name
         self.body = body
         self.constants = constants
+        self.vars = vars
     
 class Parser:
     """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form"""
     def __init__(self, tokens: TokenStream):
         self.constants = []
+        self.vars = []
         self.tokens = tokens
         self.cur_token = tokens.next()
     
@@ -66,7 +73,7 @@ class Parser:
             self.error("Expected {}".format(token_type))
 
     def factor(self):
-        """factor ::= INTEGER | LPAREN expr RPAREN"""
+        """factor ::= INTEGER | LPAREN expr RPAREN | VAR EQUAL expr"""
         if self.cur_token.token_type == Token.NUMBER:
             if not self.cur_token.value in self.constants:
                 self.constants.append(int(self.cur_token.value))
@@ -79,8 +86,18 @@ class Parser:
             node = self.expr()
             self.eat(Token.RPARAN)
             return node
+        elif self.cur_token.token_type == Token.NAME:
+            value = self.cur_token.value
+            if not value in self.vars:
+                self.vars.append(self.cur_token.value)
+
+            self.eat(Token.NAME)
+            self.eat(Token.EQUAL)
+            node = Store(self.vars.index(value), self.expr())
+
+            return node
         else:
-            self.error("Expected INTEGER or (")
+            self.error("Expected INTEGER or ( or NAME")
         
 
     def term(self):
@@ -117,5 +134,5 @@ class Parser:
         return node
     
     def parse(self):
-        return Module("test", self.expr(), self.constants)
+        return Module("test", self.expr(), self.constants, self.vars)
     
