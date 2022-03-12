@@ -16,6 +16,8 @@ DIV = re.compile(r'/')
 ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV}
 
 class TokenStream:
+    """Behaves like a generator
+    """
     def __init__(self, tokens: typing.List):
         self.tokens = tokens
         self.index = 0
@@ -31,6 +33,8 @@ class TokenStream:
         return str(self.tokens)
 
 class Tokenizer:
+    """The tokenizer uses a regex to find all tokens in the source code. It sorts them by column, so that the parser can easily find the next token.
+    """
     def __init__(self,source: str):
         self.source = source
 
@@ -54,8 +58,3 @@ class Tokenizer:
         tokens = self.parse_line(self.source, 0)
         tokens.append(TokenInfo(Token.EOF, None, 0, 0))
         return TokenStream(tokens)
-
-
-
-# parse("2 + 2")
-# -> [TokenInfo(Token.NUMBER, 2, 1, 0), TokenInfo(Token.PLUS, '+', 1, 3), TokenInfo(Token.NUMBER, 2, 1, 5)]

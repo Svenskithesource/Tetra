@@ -17,6 +17,8 @@ class Token(Enum):
     EOF = auto()
 
 class TokenInfo:
+    """Represents a token in the source code.
+    """
     def __init__(self, token_type: Token, value, line: int, column: int):
         self.token_type = token_type
         self.value = value

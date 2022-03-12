@@ -17,6 +17,8 @@ class Code:
         return f"Code(name={self.name}, bytecode={self.bytecode}, consts={self.consts})"
 
 class Parser(NodeVisitor):
+    """The parser is a visitor that generates the code object.
+    """
     def __init__(self, ast: Module):
         self.ast = ast
         self.bytecode = []

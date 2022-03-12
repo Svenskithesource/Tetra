@@ -48,6 +48,8 @@ class Module(AST):
         self.constants = constants
     
 class Parser:
+    """The ast parser. All expressions are notated in Backus–Naur form
+    """
     def __init__(self, tokens: typing.Generator):
         self.constants = []
         self.tokens = tokens
@@ -57,6 +59,8 @@ class Parser:
         raise SyntaxError(msg)
     
     def eat(self, token_type: Token):
+        """Eat the current token if it matches the given token type.
+        """
         if self.cur_token.token_type == token_type:
             self.cur_token = self.tokens.next()
         else:
