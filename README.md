@@ -10,6 +10,7 @@ pip3 install -e .
 ```
 ### Usage
 ```
+$ tetra -h
 An interpreter for the tetra language.
 
 positional arguments:
