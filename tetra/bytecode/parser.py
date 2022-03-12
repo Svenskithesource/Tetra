@@ -1,6 +1,6 @@
-from bytecode.opcodes import *
-from asts.ast import *
-from asts.visitor import NodeVisitor
+from .opcodes import *
+from ..asts.ast import *
+from ..asts.visitor import NodeVisitor
 import typing
 
 class Code:

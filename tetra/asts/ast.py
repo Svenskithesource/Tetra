@@ -5,7 +5,7 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 """
 
 import typing
-from asts.tokens import *
+from .tokens import *
 
 class AST:
     """The main class which all nodes will inherit from.

@@ -4,7 +4,7 @@ An interpreted language
 Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https://github.com/jaxp2)
 """
 
-from asts.tokens import *
+from .tokens import *
 import re, typing
 
 NUMBER = re.compile(r'\d')
