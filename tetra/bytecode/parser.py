@@ -1,7 +1,6 @@
-from lib2to3.pgen2.token import OP
-from tetra.bytecode.opcodes import *
-from tetra.ast.ast import *
-from tetra.ast.visitor import NodeVisitor
+from bytecode.opcodes import *
+from asts.ast import *
+from asts.visitor import NodeVisitor
 import typing
 
 class Code:

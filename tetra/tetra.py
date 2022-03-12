@@ -4,8 +4,8 @@ An interpreted language
 Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https://github.com/jaxp2)
 """
 
-from tetra.bytecode.opcodes import *
-from tetra.bytecode.parser import Code
+from bytecode.opcodes import *
+from bytecode.parser import Code
 import typing
 
 class Interpreter:
