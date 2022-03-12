@@ -14,8 +14,7 @@ import typing
 
 class Interpreter:
     """The interpreter is a stack based machine. It is inspired by Python's interpreter, as in saving the constants in a separate list and then pushing them on the stack.
-    It expects a code object as all information needed to run the program is saved here.
-    """
+    It expects a code object as all information needed to run the program is saved here."""
     def __init__(self, source: str):
         self.source = source
         self.stack = [] 

@@ -7,8 +7,7 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 from enum import Enum, auto
 
 class Token(Enum):
-    """All tokens in the language.
-    """
+    """All tokens in the language."""
     NUMBER = auto()
     PLUS = auto()
     MINUS = auto()
