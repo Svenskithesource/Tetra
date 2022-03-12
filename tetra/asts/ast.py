@@ -67,12 +67,21 @@ class Parser:
 
     def factor(self):
         """factor ::= INTEGER | LPAREN expr RPAREN"""
+        if self.cur_token.token_type == Token.NUMBER:
+            if not self.cur_token.value in self.constants:
+                self.constants.append(int(self.cur_token.value))
+            
+            node = IntegerLiteral(self.constants.index(int(self.cur_token.value)), int(self.cur_token.value))
+            self.eat(Token.NUMBER)
+            return node
+        elif self.cur_token.token_type == Token.LPARAN:
+            self.eat(Token.LPARAN)
+            node = self.expr()
+            self.eat(Token.RPARAN)
+            return node
+        else:
+            self.error("Expected INTEGER or (")
         
-        if not self.cur_token.value in self.constants:
-            self.constants.append(int(self.cur_token.value))
-        node = IntegerLiteral(self.constants.index(int(self.cur_token.value)), int(self.cur_token.value))
-        self.eat(Token.NUMBER)
-        return node
 
     def term(self):
         """term ::= factor { ('*'|'/') factor }"""
