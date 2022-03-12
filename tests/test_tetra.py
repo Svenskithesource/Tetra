@@ -7,3 +7,6 @@ class TestTetra(unittest.TestCase):
 
     def test_div(self):
         self.assertEqual(tetra.Interpreter("1 / 2").run(), 0) # will be 0 because of floor division
+    def test_paran(self):
+        self.assertEqual(tetra.Interpreter("(1) + (2)").run(), 3)
+        self.assertEqual(tetra.Interpreter("(1 + 2) * 3").run(), 9)
