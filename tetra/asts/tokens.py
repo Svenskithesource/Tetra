@@ -15,6 +15,8 @@ class Token(Enum):
     DIV = auto()
     LPARAN = auto()
     RPARAN = auto()
+    VAR = auto()
+    EQUAL = auto()
     EOF = auto()
 
 class TokenInfo:
