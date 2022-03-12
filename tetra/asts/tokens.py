@@ -13,8 +13,8 @@ class Token(Enum):
     MINUS = auto()
     MUL = auto()
     DIV = auto()
-    LPARAM = auto()
-    RPARAM = auto()
+    LPARAN = auto()
+    RPARAN = auto()
     EOF = auto()
 
 class TokenInfo:

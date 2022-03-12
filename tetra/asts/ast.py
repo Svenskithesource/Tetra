@@ -66,7 +66,7 @@ class Parser:
             self.error("Expected {}".format(token_type))
 
     def factor(self):
-        """factor ::= INTEGER"""
+        """factor ::= INTEGER | LPAREN expr RPAREN"""
         
         if not self.cur_token.value in self.constants:
             self.constants.append(int(self.cur_token.value))
