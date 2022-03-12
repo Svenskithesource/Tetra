@@ -8,8 +8,7 @@ import typing
 from .tokens import *
 
 class AST:
-    """
-    The main class which all nodes will inherit from.
+    """The main class which all nodes will inherit from.
     """
     def __str__(self): # To print the AST
         lines = [self.__class__.__name__ + ':']
@@ -49,8 +48,7 @@ class Module(AST):
         self.constants = constants
     
 class Parser:
-    """
-    The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form
+    """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form
     """
     def __init__(self, tokens: typing.Generator):
         self.constants = []
@@ -61,8 +59,7 @@ class Parser:
         raise SyntaxError(msg)
     
     def eat(self, token_type: Token):
-        """
-        Goes to the next token if the current token matches the given type
+        """Goes to the next token if the current token matches the given type
         """
         if self.cur_token.token_type == token_type:
             self.cur_token = self.tokens.next()
@@ -70,8 +67,7 @@ class Parser:
             self.error("Expected {}".format(token_type))
 
     def factor(self):
-        """
-        factor ::= INTEGER
+        """factor ::= INTEGER
         """
         
         if not self.cur_token.value in self.constants:
@@ -81,8 +77,7 @@ class Parser:
         return node
 
     def term(self):
-        """
-        term ::= factor { ('*'|'/') factor }
+        """term ::= factor { ('*'|'/') factor }
         """
         node = self.factor()
         while self.cur_token.token_type in (Token.MUL, Token.DIV):

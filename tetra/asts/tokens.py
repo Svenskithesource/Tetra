@@ -7,8 +7,7 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 from enum import Enum, auto
 
 class Token(Enum):
-    """
-    All tokens in the language.
+    """All tokens in the language.
     """
     NUMBER = auto()
     PLUS = auto()
@@ -18,8 +17,7 @@ class Token(Enum):
     EOF = auto()
 
 class TokenInfo:
-    """
-    Represents a token in the source code.
+    """Represents a token in the source code.
     """
     def __init__(self, token_type: Token, value, line: int, column: int):
         self.token_type = token_type
