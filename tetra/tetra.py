@@ -32,8 +32,8 @@ class Interpreter:
     def execute(self):
         for opcode in self.code.bytecode:
             if opcode[0] == Opcode.ADD:
-                a = self.stack.pop() 
-                b = self.stack.pop() 
+                a = self.stack.pop()
+                b = self.stack.pop()
                 self.stack.append(a + b)
             elif opcode[0] == Opcode.SUB:
                 a = self.stack.pop()

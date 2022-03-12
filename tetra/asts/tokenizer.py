@@ -12,8 +12,10 @@ PLUS = re.compile(r'\+')
 MINUS = re.compile(r'-')
 MUL = re.compile(r'\*')
 DIV = re.compile(r'/')
+LPARAM = re.compile(r'\(')
+RPARAM = re.compile(r'\)')
 
-ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV}
+ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAM": LPARAM, "RPARAM": RPARAM}
 
 class TokenStream:
     """Behaves like a generator

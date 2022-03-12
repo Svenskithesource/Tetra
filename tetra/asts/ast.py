@@ -5,6 +5,8 @@ Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https:
 """
 
 import typing
+
+from tetra.asts.tokenizer import TokenStream
 from .tokens import *
 
 class AST:
@@ -48,7 +50,7 @@ class Module(AST):
     
 class Parser:
     """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form"""
-    def __init__(self, tokens: typing.Generator):
+    def __init__(self, tokens: TokenStream):
         self.constants = []
         self.tokens = tokens
         self.cur_token = tokens.next()
