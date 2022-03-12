@@ -15,7 +15,7 @@ def file_exists(file_path):
     return file_path
 
 def main():
-    parser = argparse.ArgumentParser(description='An CIL interpreter for the tetra language.')
+    parser = argparse.ArgumentParser(description='An interpreter for the tetra language.')
     parser.add_argument('filepath', type=file_exists, help='The source file to run.')
     parser.add_argument('-d', "--dump", action="store_true", help="Print the top item on the stack after execution.")
     args = parser.parse_args()
