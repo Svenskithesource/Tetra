@@ -25,6 +25,10 @@ class Store(AST):
         self.index = index
         self.value = value
 
+class Load(AST):
+    def __init__(self, index):
+        self.index = index
+
 class IntegerLiteral(AST):
     def __init__(self, index, value: int):
         self.index = index
@@ -96,10 +100,18 @@ class Parser:
                 self.vars.append(self.cur_token.value)
 
             self.eat(Token.NAME)
-            self.eat(Token.EQUAL)
-            node = Store(self.vars.index(value), self.expr())
+            if self.cur_token.token_type == Token.EQUAL:
+                self.eat(Token.EQUAL)
+                node = Store(self.vars.index(value), self.expr())
+                return node
+            elif self.cur_token.token_type == Token.NEWLINE:
+                try:
+                    return Load(self.vars.index(value))
+                except ValueError:
+                    self.error(f"Variable '{value}' undefined")
+            else:
+                self.error("Expected '=' or a newline")
 
-            return node
         else:
             self.error(f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}")
         

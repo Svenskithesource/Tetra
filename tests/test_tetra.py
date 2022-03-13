@@ -39,3 +39,8 @@ class TestTetra(unittest.TestCase):
         result = interpreter.run()
         self.assertEqual(result, 20)
         self.assertEqual(interpreter.stack[-1], 2) # It will be the last element of the stack since the top element will already be popped off the stack after the program is executed
+    
+    def test_var_loading(self):
+        interpreter = tetra.Interpreter("a = 1 + 1\na")
+        result = interpreter.run()
+        self.assertEqual(result, 2)

@@ -56,6 +56,8 @@ class Interpreter:
                     self.heap.append(a)
                 else: 
                     self.heap[opcode[1]] = a
+            elif opcode[0] == Opcode.LOAD_VAR:
+                self.stack.append(self.heap[opcode[1]])
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
         

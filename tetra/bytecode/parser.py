@@ -59,6 +59,9 @@ class Parser(NodeVisitor):
         self.visit(node.value)
         self.bytecode.append((Opcode.STORE_VAR, node.index))
 
+    def visit_Load(self, node: Load):
+        self.bytecode.append((Opcode.LOAD_VAR, node.index))
+
     def parse(self) -> Code:
         self.visit(self.ast)
         return Code(self.ast.name, self.bytecode, self.ast.constants, self.ast.vars)
