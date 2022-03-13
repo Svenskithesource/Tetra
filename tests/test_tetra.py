@@ -44,3 +44,7 @@ class TestTetra(unittest.TestCase):
         interpreter = tetra.Interpreter("a = 1 + 1\na")
         result = interpreter.run()
         self.assertEqual(result, 2)
+
+        interpreter = tetra.Interpreter("a = 1 + 1\nb")
+        with self.assertRaises(SyntaxError):
+            interpreter.run()

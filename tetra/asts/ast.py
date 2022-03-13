@@ -96,16 +96,17 @@ class Parser:
             return node
         elif self.cur_token.token_type == Token.NAME:
             value = self.cur_token.value
-            if not value in self.vars:
-                self.vars.append(self.cur_token.value)
 
             self.eat(Token.NAME)
             if self.cur_token.token_type == Token.EQUAL:
+                if not value in self.vars:
+                    self.vars.append(value)
                 self.eat(Token.EQUAL)
                 node = Store(self.vars.index(value), self.expr())
                 return node
             elif self.cur_token.token_type == Token.NEWLINE:
                 try:
+                    self.eat(Token.NEWLINE)
                     return Load(self.vars.index(value))
                 except ValueError:
                     self.error(f"Variable '{value}' undefined")
