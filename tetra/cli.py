@@ -21,8 +21,6 @@ def main():
     args = parser.parse_args()
     with open(args.filepath, "r") as f:
         source = f.read()
-        if source.count("\n") > 1:
-            raise SyntaxError("Only one line of code is supported for now.")
         interpreter = Interpreter(source.strip())
         result = interpreter.run()
         if args.dump:

@@ -33,3 +33,6 @@ class TestTetra(unittest.TestCase):
         interpreter.run()
         self.assertEqual(interpreter.heap[0], 1)
         self.assertEqual(interpreter.code.vars[0], "a")
+    
+    def test_mutliline(self):
+        self.assertEqual(tetra.Interpreter("1+ 1\n4*5").run(), 2,20)
