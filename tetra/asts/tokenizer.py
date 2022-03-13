@@ -4,6 +4,7 @@ An interpreted language
 Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https://github.com/jaxp2)
 """
 
+from lib2to3.pgen2.token import NEWLINE
 from .tokens import *
 import re, typing
 
@@ -16,7 +17,8 @@ LPARAN = re.compile(r'\(')
 RPARAN = re.compile(r'\)')
 NAME = re.compile(r"(?!\d+)\w+")
 EQUAL = re.compile(r'=')
-ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAN": LPARAN, "RPARAN": RPARAN, "NAME": NAME, "EQUAL": EQUAL}
+NEWLINE = re.compile(r'(\r\n|\r|\n)') # Windows uses \r\n, Linux uses \n and Mac uses \r
+ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAN": LPARAN, "RPARAN": RPARAN, "NAME": NAME, "EQUAL": EQUAL, "NEWLINE": NEWLINE}
 
 class TokenStream:
     """Behaves like a generator
@@ -51,16 +53,15 @@ class Tokenizer:
                     tokens.append(TokenInfo(getattr(Token, list(ALL.keys())[i]), match.group(0), lineo, match.start()))
                 else:
                     break
-        
         tokens.sort(key=lambda x: x.column)
-
+        tokens.append(TokenInfo(Token.NEWLINE, None, lineo, len(line)))
         return tokens
     def parse_source(self):
         tokens = []
-        for line in self.source.splitlines():
-            tokens.append(self.parse_line(line, 0))
+        for i, line in enumerate(self.source.splitlines()):
+            tokens.extend(self.parse_line(line, i+1)) # +1 because line numbers start at 1
         return tokens
     def tokenize(self) -> TokenStream: 
         tokens = self.parse_source()
         tokens.append(TokenInfo(Token.EOF, None, 0, 0))
-        return [TokenStream(tokens_line) for tokens_line in tokens]
+        return TokenStream(tokens)

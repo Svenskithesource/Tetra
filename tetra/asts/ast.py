@@ -16,6 +16,9 @@ class AST:
         for key, val in vars(self).items():
             lines += '{}: {}'.format(key, val).split('\n')
         return '\n    '.join(lines)
+    
+    def __repr__(self): # For when it's in a list or similar
+        return str(self)
 
 class Store(AST):
     def __init__(self, index, value):
@@ -59,9 +62,8 @@ class Parser:
     def __init__(self, tokens: TokenStream):
         self.constants = []
         self.vars = []
-        for i in tokens:
-            self.tokens = i
-            self.cur_token = i.next()
+        self.tokens = tokens
+        self.cur_token = self.tokens.next()
     
     def error(self, msg: str):
         raise SyntaxError(msg)
@@ -76,7 +78,8 @@ class Parser:
     def factor(self):
         """factor ::= INTEGER | LPAREN expr RPAREN | VAR EQUAL expr"""
         if self.cur_token.token_type == Token.NUMBER:
-            if not self.cur_token.value in self.constants:
+            if int(self.cur_token.value) not in self.constants:
+                print(self.cur_token.value)
                 self.constants.append(int(self.cur_token.value))
             
             node = IntegerLiteral(self.constants.index(int(self.cur_token.value)), int(self.cur_token.value))
@@ -98,7 +101,7 @@ class Parser:
 
             return node
         else:
-            self.error("Expected INTEGER or ( or NAME")
+            self.error(f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}")
         
 
     def term(self):
@@ -131,9 +134,16 @@ class Parser:
                 node = Sub(node, self.term())
             else:
                 self.error("Unknown operator")
-            
+        
+
         return node
     
     def parse(self):
-        return Module("test", self.expr(), self.constants, self.vars)
+        nodes = [self.expr()]
+        while self.cur_token.token_type == Token.NEWLINE:
+            self.eat(Token.NEWLINE)
+            if self.cur_token.token_type == Token.EOF:
+                break
+            nodes.append(self.expr())
+        return Module("test", nodes, self.constants, self.vars)
     

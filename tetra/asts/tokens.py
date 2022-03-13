@@ -17,6 +17,7 @@ class Token(Enum):
     RPARAN = auto()
     NAME = auto()
     EQUAL = auto()
+    NEWLINE = auto()
     EOF = auto()
 
 class TokenInfo:
@@ -30,6 +31,9 @@ class TokenInfo:
     
     def __str__(self):
         return f"TokenInfo(token_type={self.token_type}, value={self.value}, line={self.line}, column={self.column})"
+
+    def __repr__(self):
+        return str(self)
 
     def __getitem__(self, key): # so you can e.g. do token[0] or token["token_type"]
         if isinstance(key, str):

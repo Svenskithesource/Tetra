@@ -35,4 +35,7 @@ class TestTetra(unittest.TestCase):
         self.assertEqual(interpreter.code.vars[0], "a")
     
     def test_mutliline(self):
-        self.assertEqual(tetra.Interpreter("1+ 1\n4*5").run(), 2,20)
+        interpreter = tetra.Interpreter("1+ 1\n4*5")
+        result = interpreter.run()
+        self.assertEqual(result, 20)
+        self.assertEqual(interpreter.stack[-1], 2) # It will be the last element of the stack since the top element will already be popped off the stack after the program is executed
