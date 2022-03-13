@@ -21,15 +21,14 @@ class Interpreter:
         self.heap = []
 
     def run(self):
-        for line in self.source.splitlines():
-            tokens = Tokenizer(line).tokenize()
+        tokens = Tokenizer(self.source).tokenize()
 
-            parser = Parser(tokens).parse()
+        parser = Parser(tokens).parse()
 
-            code = BytecodeParser(parser).parse()
+        code = BytecodeParser(parser).parse()
 
-            self.code = code
-            return self.execute()
+        self.code = code
+        return self.execute()
 
     def execute(self):
         for opcode in self.code.bytecode:

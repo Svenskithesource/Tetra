@@ -40,7 +40,6 @@ class Tokenizer:
     """
     def __init__(self,source: str):
         self.source = source
-
     def parse_line(self, line, lineo) -> typing.List[TokenInfo]:
         tokens = []
         for i, regex in enumerate(ALL.values()):
@@ -56,8 +55,12 @@ class Tokenizer:
         tokens.sort(key=lambda x: x.column)
 
         return tokens
-            
+    def parse_source(self):
+        tokens = []
+        for line in self.source.splitlines():
+            tokens.append(self.parse_line(line, 0))
+        return tokens
     def tokenize(self) -> TokenStream: 
-        tokens = self.parse_line(self.source, 0)
+        tokens = self.parse_source()
         tokens.append(TokenInfo(Token.EOF, None, 0, 0))
-        return TokenStream(tokens)
+        return [TokenStream(tokens_line) for tokens_line in tokens]

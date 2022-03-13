@@ -59,8 +59,9 @@ class Parser:
     def __init__(self, tokens: TokenStream):
         self.constants = []
         self.vars = []
-        self.tokens = tokens
-        self.cur_token = tokens.next()
+        for i in tokens:
+            self.tokens = i
+            self.cur_token = i.next()
     
     def error(self, msg: str):
         raise SyntaxError(msg)
