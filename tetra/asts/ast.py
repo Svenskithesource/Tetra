@@ -83,7 +83,6 @@ class Parser:
         """factor ::= INTEGER | LPAREN expr RPAREN | VAR EQUAL expr"""
         if self.cur_token.token_type == Token.NUMBER:
             if int(self.cur_token.value) not in self.constants:
-                print(self.cur_token.value)
                 self.constants.append(int(self.cur_token.value))
             
             node = IntegerLiteral(self.constants.index(int(self.cur_token.value)), int(self.cur_token.value))
