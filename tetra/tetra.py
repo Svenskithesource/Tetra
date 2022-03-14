@@ -52,7 +52,7 @@ class Interpreter:
                 self.stack.append(self.code.consts[opcode[1]])
             elif opcode[0] == Opcode.STORE_VAR:
                 a = self.stack.pop()
-                if len(self.heap) - 1 < opcode[1]:
+                if len(self.heap) - 1 < opcode[1]: # The index of the var = the index of the value in the heap
                     self.heap.append(a)
                 else: 
                     self.heap[opcode[1]] = a
