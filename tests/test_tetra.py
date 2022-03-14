@@ -15,6 +15,7 @@ class TestTetra(unittest.TestCase):
     def test_add(self):
         self.assertEqual(tetra.Interpreter("1 + 2").run(), 3)
         self.assertEqual(tetra.Interpreter("1 + 2 + 3").run(), 6)
+        self.assertEqual(tetra.Interpreter("1 + 20").run(), 21)
     
     def test_sub(self):
         self.assertEqual(tetra.Interpreter("1 - 2").run(), -1)
@@ -51,3 +52,7 @@ class TestTetra(unittest.TestCase):
 
     def test_var_overwrite(self):
         self.assertEqual(tetra.Interpreter("a = 1\na = 2\na").run(), 2)
+
+    def test_empty_input(self):
+        with self.assertRaises(SyntaxError):
+            tetra.Interpreter("").run()

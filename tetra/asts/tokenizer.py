@@ -8,7 +8,7 @@ from lib2to3.pgen2.token import NEWLINE
 from .tokens import *
 import re, typing
 
-NUMBER = re.compile(r'\d')
+NUMBER = re.compile(r'\d+')
 PLUS = re.compile(r'\+')
 MINUS = re.compile(r'-')
 MUL = re.compile(r'\*')
