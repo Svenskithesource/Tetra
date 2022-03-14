@@ -21,13 +21,13 @@ class AST:
         return str(self)
 
 class Store(AST):
-    def __init__(self, index, value):
-        self.index = index
+    def __init__(self, name, value):
+        self.name = name
         self.value = value
 
 class Load(AST):
-    def __init__(self, index):
-        self.index = index
+    def __init__(self, name):
+        self.name = name
 
 class IntegerLiteral(AST):
     def __init__(self, index, value: int):
@@ -55,17 +55,15 @@ class Div(AST):
         self.right = right
 
 class Module(AST):
-    def __init__(self, name: str, body: typing.List, constants: typing.List, vars: typing.List[str]):
+    def __init__(self, name: str, body: typing.List, constants: typing.List):
         self.name = name
         self.body = body
         self.constants = constants
-        self.vars = vars
     
 class Parser:
     """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form"""
     def __init__(self, tokens: TokenStream):
         self.constants = []
-        self.vars = []
         self.tokens = tokens
         self.cur_token = self.tokens.next()
     
@@ -98,17 +96,13 @@ class Parser:
 
             self.eat(Token.NAME)
             if self.cur_token.token_type == Token.EQUAL:
-                if not value in self.vars:
-                    self.vars.append(value)
                 self.eat(Token.EQUAL)
-                node = Store(self.vars.index(value), self.expr())
+                node = Store(value, self.expr())
                 return node
             elif self.cur_token.token_type == Token.NEWLINE:
-                try:
-                    self.eat(Token.NEWLINE)
-                    return Load(self.vars.index(value))
-                except ValueError:
-                    self.error(f"Variable '{value}' undefined")
+                self.eat(Token.NEWLINE)
+                return Load(value)
+
             else:
                 self.error("Expected '=' or a newline")
 
@@ -157,5 +151,5 @@ class Parser:
             if self.cur_token.token_type == Token.EOF:
                 break
             nodes.append(self.expr())
-        return Module("test", nodes, self.constants, self.vars)
+        return Module("test", nodes, self.constants)
     

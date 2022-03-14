@@ -27,6 +27,7 @@ class Parser(NodeVisitor):
     def __init__(self, ast: Module):
         self.ast = ast
         self.bytecode = []
+        self.vars = []
     
     def visit_Module(self, node: Module):
         for child in node.body:
@@ -57,12 +58,14 @@ class Parser(NodeVisitor):
 
     def visit_Store(self, node: Store):
         self.visit(node.value)
-        self.bytecode.append((Opcode.STORE_VAR, node.index))
+        if node.name not in self.vars:
+            self.vars.append(node.name)
+        self.bytecode.append((Opcode.STORE_VAR, node.name))
 
     def visit_Load(self, node: Load):
-        self.bytecode.append((Opcode.LOAD_VAR, node.index))
+        self.bytecode.append((Opcode.LOAD_VAR, node.name))
 
     def parse(self) -> Code:
         self.visit(self.ast)
-        return Code(self.ast.name, self.bytecode, self.ast.constants, self.ast.vars)
+        return Code(self.ast.name, self.bytecode, self.ast.constants, self.vars)
 

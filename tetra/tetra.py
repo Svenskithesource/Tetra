@@ -19,6 +19,7 @@ class Interpreter:
         self.source = source
         self.stack = [] 
         self.heap = []
+        self.vars = []
 
     def run(self):
         tokens = Tokenizer(self.source).tokenize()
@@ -28,6 +29,9 @@ class Interpreter:
         code = BytecodeParser(parser).parse()
 
         self.code = code
+        self.vars.extend(code.vars)
+        self.vars = list(set(self.vars)) # Remove duplicates
+
         return self.execute()
 
     def execute(self):
@@ -52,12 +56,15 @@ class Interpreter:
                 self.stack.append(self.code.consts[opcode[1]])
             elif opcode[0] == Opcode.STORE_VAR:
                 a = self.stack.pop()
-                if len(self.heap) - 1 < opcode[1]: # The index of the var = the index of the value in the heap
+                
+                if len(self.heap) - 1 < self.vars.index(opcode[1]): # The index of the var = the index of the value in the heap
                     self.heap.append(a)
                 else: 
-                    self.heap[opcode[1]] = a
+                    self.heap[self.vars.index(opcode[1])] = a
             elif opcode[0] == Opcode.LOAD_VAR:
-                self.stack.append(self.heap[opcode[1]])
+                if opcode[1] not in self.vars:
+                    return SyntaxError(f"Variable {opcode[1]} is not defined")
+                self.stack.append(self.heap[self.vars.index(opcode[1])])
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
         
