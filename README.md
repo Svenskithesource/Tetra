@@ -19,6 +19,12 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
   -d, --dump  Print the top item on the stack after execution.
+```
+To run the REPL
+```
+$ tetra
+No file specified. Starting REPL.
+>>>
  ```
 ### Unitests
 To run the unitests do:
