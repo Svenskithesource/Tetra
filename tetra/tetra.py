@@ -15,15 +15,18 @@ import typing
 class Interpreter:
     """The interpreter is a stack based machine. It is inspired by Python's interpreter, as in saving the constants in a separate list and then pushing them on the stack.
     It expects a code object as all information needed to run the program is saved here."""
-    def __init__(self, source: str):
+    def __init__(self, source: str, repl=False):
         self.source = source
+        self.repl = repl
         self.stack = [] 
-        self.heap = []
+        self.heap = [] 
+        if self.repl:
+            self.vars = []
 
     def run(self):
         tokens = Tokenizer(self.source).tokenize()
 
-        parser = Parser(tokens).parse()
+        parser = Parser(tokens, self.repl).parse()
 
         code = BytecodeParser(parser).parse()
 
@@ -52,12 +55,27 @@ class Interpreter:
                 self.stack.append(self.code.consts[opcode[1]])
             elif opcode[0] == Opcode.STORE_VAR:
                 a = self.stack.pop()
-                if len(self.heap) - 1 < opcode[1]: # The index of the var = the index of the value in the heap
+                if self.repl:
+                    if opcode[1] in self.vars:
+                        index = self.vars.index(opcode[1])
+                    else:
+                        self.vars.append(opcode[1])
+                        index = len(self.vars) - 1
+                else:
+                    index = opcode[1]
+
+                if len(self.heap) - 1 < index: # The index of the var = the index of the value in the heap
                     self.heap.append(a)
                 else: 
                     self.heap[opcode[1]] = a
             elif opcode[0] == Opcode.LOAD_VAR:
-                self.stack.append(self.heap[opcode[1]])
+                if self.repl:
+                    try:
+                        self.stack.append(self.vars.index(opcode[1])) # Get the index of the variable in the environment vars list
+                    except ValueError:
+                        raise SyntaxError("Variable '{}' not defined".format(opcode[1]))
+                else:
+                    self.stack.append(self.heap[opcode[1]])
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
         

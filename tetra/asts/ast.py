@@ -63,7 +63,8 @@ class Module(AST):
     
 class Parser:
     """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form"""
-    def __init__(self, tokens: TokenStream):
+    def __init__(self, tokens: TokenStream, repl):
+        self.repl = repl
         self.constants = []
         self.vars = []
         self.tokens = tokens
@@ -101,12 +102,19 @@ class Parser:
                 if not value in self.vars:
                     self.vars.append(value)
                 self.eat(Token.EQUAL)
-                node = Store(self.vars.index(value), self.expr())
+                if self.repl:
+                    node = Store(value, self.expr()) # Store the var name if it's run in repl because we don't know if it's defined or not
+                else:
+                    node = Store(self.vars.index(value), self.expr())
                 return node
             elif self.cur_token.token_type == Token.NEWLINE:
                 try:
                     self.eat(Token.NEWLINE)
-                    return Load(self.vars.index(value))
+
+                    if self.repl:
+                        return Load(value) # Store the var name if it's run in repl because we don't know if it's defined or not
+                    else:
+                        return Load(self.vars.index(value))
                 except ValueError:
                     self.error(f"Variable '{value}' undefined")
             else:
