@@ -28,5 +28,6 @@ def main():
             if args.dump:
                 print(result)
     else:
+        print("No file specified. Starting REPL.")
         Repl().run()
 
