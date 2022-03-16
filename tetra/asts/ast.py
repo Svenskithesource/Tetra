@@ -80,8 +80,23 @@ class Parser:
         else:
             self.error("Expected {}".format(token_type))
 
+    def assign(self):
+        """assign ::= VAR EQUAL expr"""
+        value = self.cur_token.value
+
+        if not value in self.vars:
+            self.vars.append(value)
+        self.eat(Token.NAME)
+        self.eat(Token.EQUAL)
+        if self.repl:
+            node = Store(value, self.expr()) # Store the var name if it's run in repl because we don't know if it's defined or not
+        else:
+            node = Store(self.vars.index(value), self.expr())
+
+        return node
+
     def factor(self):
-        """factor ::= INTEGER | LPAREN expr RPAREN | VAR EQUAL expr"""
+        """factor ::= INTEGER | LPAREN expr RPAREN | VAR"""
         if self.cur_token.token_type == Token.NUMBER:
             if int(self.cur_token.value) not in self.constants:
                 self.constants.append(int(self.cur_token.value))
@@ -96,29 +111,14 @@ class Parser:
             return node
         elif self.cur_token.token_type == Token.NAME:
             value = self.cur_token.value
-
             self.eat(Token.NAME)
-            if self.cur_token.token_type == Token.EQUAL:
-                if not value in self.vars:
-                    self.vars.append(value)
-                self.eat(Token.EQUAL)
+            try:
                 if self.repl:
-                    node = Store(value, self.expr()) # Store the var name if it's run in repl because we don't know if it's defined or not
+                    return Load(value) # Store the var name if it's run in repl because we don't know if it's defined or not
                 else:
-                    node = Store(self.vars.index(value), self.expr())
-                return node
-            elif self.cur_token.token_type == Token.NEWLINE:
-                try:
-                    self.eat(Token.NEWLINE)
-
-                    if self.repl:
-                        return Load(value) # Store the var name if it's run in repl because we don't know if it's defined or not
-                    else:
-                        return Load(self.vars.index(value))
-                except ValueError:
-                    self.error(f"Variable '{value}' undefined")
-            else:
-                self.error("Expected '=' or a newline")
+                    return Load(self.vars.index(value))
+            except ValueError:
+                self.error(f"Variable '{value}' undefined")
 
         else:
             self.error(f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}")
@@ -158,12 +158,21 @@ class Parser:
 
         return node
     
+    def statement(self):
+        """statement ::= assign | expr"""
+        if self.cur_token.token_type == Token.NAME:
+            if self.tokens.peek().token_type == Token.EQUAL:
+                return self.assign()
+            return self.expr()
+        else:
+            return self.expr()
+
     def parse(self):
-        nodes = [self.expr()]
+        nodes = [self.statement()]
         while self.cur_token.token_type == Token.NEWLINE:
             self.eat(Token.NEWLINE)
             if self.cur_token.token_type == Token.EOF:
                 break
-            nodes.append(self.expr())
+            nodes.append(self.statement())
         return Module("test", nodes, self.constants, self.vars)
     

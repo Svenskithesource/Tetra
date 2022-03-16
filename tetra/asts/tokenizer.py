@@ -34,6 +34,12 @@ class TokenStream:
             self.index += 1
             return self.tokens[self.index - 1]
     
+    def peek(self):
+        if self.index >= len(self.tokens):
+            raise StopIteration
+        else:
+            return self.tokens[self.index]
+    
     def __str__(self) -> str:
         return str(self.tokens)
 

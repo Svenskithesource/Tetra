@@ -67,11 +67,11 @@ class Interpreter:
                 if len(self.heap) - 1 < index: # The index of the var = the index of the value in the heap
                     self.heap.append(a)
                 else: 
-                    self.heap[opcode[1]] = a
+                    self.heap[index] = a
             elif opcode[0] == Opcode.LOAD_VAR:
                 if self.repl:
                     try:
-                        self.stack.append(self.vars.index(opcode[1])) # Get the index of the variable in the environment vars list
+                        self.stack.append(self.heap[self.vars.index(opcode[1])]) # Get the index of the variable in the environment vars list
                     except ValueError:
                         raise SyntaxError("Variable '{}' not defined".format(opcode[1]))
                 else:

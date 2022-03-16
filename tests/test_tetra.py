@@ -41,6 +41,12 @@ class TestTetra(unittest.TestCase):
         self.assertEqual(result, 20)
         self.assertEqual(interpreter.stack[-1], 2) # It will be the last element of the stack since the top element will already be popped off the stack after the program is executed
     
+    def test_var_storing(self):
+        interpreter = tetra.Interpreter("a = 1 + 1")
+        interpreter.run()
+        self.assertEqual(interpreter.heap[0], 2)
+        self.assertEqual(interpreter.code.vars[0], "a")
+
     def test_var_loading(self):
         interpreter = tetra.Interpreter("a = 1 + 1\na")
         result = interpreter.run()
@@ -52,6 +58,9 @@ class TestTetra(unittest.TestCase):
 
     def test_var_overwrite(self):
         self.assertEqual(tetra.Interpreter("a = 1\na = 2\na").run(), 2)
+
+    def test_var_with_var(self):
+        self.assertEqual(tetra.Interpreter("a = 1\na = a + 2\na").run(), 3)
 
     def test_empty_input(self):
         with self.assertRaises(SyntaxError):
