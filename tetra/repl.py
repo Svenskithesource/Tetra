@@ -4,7 +4,7 @@ import traceback
 
 class Repl:
     def __init__(self):
-        self.interpreter = Interpreter("", True)
+        self.interpreter = Interpreter("", "REPL",repl=True)
     
     def run(self):
         while True:

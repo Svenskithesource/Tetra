@@ -8,6 +8,7 @@ import typing
 
 from tetra.asts.tokenizer import TokenStream
 from .tokens import *
+from tetra.errors import error
 
 class AST:
     """The main class which all nodes will inherit from."""
@@ -63,22 +64,20 @@ class Module(AST):
     
 class Parser:
     """The ast parser. All expressions are notated in the code descriptions are in the Backus-Naur form"""
-    def __init__(self, tokens: TokenStream, repl):
+    def __init__(self, name, tokens: TokenStream, repl):
         self.repl = repl
+        self.name = name
         self.constants = []
         self.vars = []
         self.tokens = tokens
         self.cur_token = self.tokens.next()
-    
-    def error(self, msg: str):
-        raise SyntaxError(msg)
     
     def eat(self, token_type: Token):
         """Goes to the next token if the current token matches the given type"""
         if self.cur_token.token_type == token_type:
             self.cur_token = self.tokens.next()
         else:
-            self.error("Expected {}".format(token_type))
+            error("SyntaxError", self.name, f"Expected {token_type}", self.cur_token.line, self.cur_token.lineo, self.cur_token.column)
 
     def assign(self):
         """assign ::= VAR EQUAL expr"""
@@ -118,10 +117,10 @@ class Parser:
                 else:
                     return Load(self.vars.index(value))
             except ValueError:
-                self.error(f"Variable '{value}' undefined")
+                error("NameError", self.name, f"Variable '{value}' undefined", self.tokens.peek_old().line, self.tokens.peek_old().lineo, self.tokens.peek_old().column, self.repl)
 
         else:
-            self.error(f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}")
+            error("SyntaxError", self.name, f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.repl)
         
 
     def term(self):
@@ -137,7 +136,7 @@ class Parser:
                 self.eat(Token.DIV)
                 node = Div(node, self.factor())
             else:
-                self.error("Unknown operator")
+                error("SyntaxError", self.name, "Unknown operator", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.error)
 
         return node
 
@@ -153,7 +152,7 @@ class Parser:
                 self.eat(Token.MINUS)
                 node = Sub(node, self.term())
             else:
-                self.error("Unknown operator")
+                error("SyntaxError", self.name, "Unknown operator", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.error)
         
 
         return node
@@ -174,5 +173,5 @@ class Parser:
             if self.cur_token.token_type == Token.EOF:
                 break
             nodes.append(self.statement())
-        return Module("test", nodes, self.constants, self.vars)
+        return Module(self.name, nodes, self.constants, self.vars)
     

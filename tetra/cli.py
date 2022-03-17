@@ -23,7 +23,7 @@ def main():
     if args.filepath:
         with open(args.filepath, "r") as f:
             source = f.read()
-            interpreter = Interpreter(source.strip())
+            interpreter = Interpreter(source.strip(), args.filepath)
             result = interpreter.run()
             if args.dump:
                 print(result)

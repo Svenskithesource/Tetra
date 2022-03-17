@@ -10,14 +10,16 @@ from .asts.ast import Parser
 from .asts.tokens import Token, TokenInfo
 from .asts.tokenizer import *
 from .bytecode.parser import Parser as BytecodeParser
+from .errors import error
 import typing
 
 class Interpreter:
     """The interpreter is a stack based machine. It is inspired by Python's interpreter, as in saving the constants in a separate list and then pushing them on the stack.
     It expects a code object as all information needed to run the program is saved here."""
-    def __init__(self, source: str, repl=False):
+    def __init__(self, source: str, name: str = "<unknown>", repl=False):
         self.source = source
         self.repl = repl
+        self.name = name
         self.stack = [] 
         self.heap = [] 
         if self.repl:
@@ -26,7 +28,7 @@ class Interpreter:
     def run(self):
         tokens = Tokenizer(self.source).tokenize()
 
-        parser = Parser(tokens, self.repl).parse()
+        parser = Parser(self.name, tokens, self.repl).parse()
 
         code = BytecodeParser(parser).parse()
 
@@ -73,7 +75,9 @@ class Interpreter:
                     try:
                         self.stack.append(self.heap[self.vars.index(opcode[1])]) # Get the index of the variable in the environment vars list
                     except ValueError:
-                        raise SyntaxError("Variable '{}' not defined".format(opcode[1]))
+                        error("NameError", self.name, f"Variable '{opcode[1]}' undefined", None, 1, None, self.repl)
+                        break
+
                 else:
                     self.stack.append(self.heap[opcode[1]])
             elif opcode[0] == Opcode.DUMP:

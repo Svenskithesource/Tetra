@@ -23,11 +23,12 @@ class Token(Enum):
 class TokenInfo:
     """Represents a token in the source code.
     """
-    def __init__(self, token_type: Token, value, line: int, column: int):
+    def __init__(self, token_type: Token, value, line: str,lineo: int, column: int):
         self.token_type = token_type
         self.value = value
         self.column = column
         self.line = line
+        self.lineo = lineo
     
     def __str__(self):
         return f"TokenInfo(token_type={self.token_type}, value={self.value}, line={self.line}, column={self.column})"
