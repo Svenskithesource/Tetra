@@ -18,6 +18,7 @@ class Token(Enum):
     NAME = auto()
     EQUAL = auto()
     NEWLINE = auto()
+    STRING = auto()
     EOF = auto()
 
 class TokenInfo:

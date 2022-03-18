@@ -8,17 +8,12 @@ from lib2to3.pgen2.token import NEWLINE
 from .tokens import *
 import re, typing
 
-NUMBER = re.compile(r'\d+')
-PLUS = re.compile(r'\+')
-MINUS = re.compile(r'-')
-MUL = re.compile(r'\*')
-DIV = re.compile(r'/')
-LPARAN = re.compile(r'\(')
-RPARAN = re.compile(r'\)')
-NAME = re.compile(r"(?!\d+)\w+")
-EQUAL = re.compile(r'=')
-NEWLINE = re.compile(r'(\r\n|\r|\n)') # Windows uses \r\n, Linux uses \n and Mac uses \r
-ALL = {"NUMBER": NUMBER, "PLUS": PLUS, "MINUS": MINUS, "MUL": MUL, "DIV": DIV, "LPARAN": LPARAN, "RPARAN": RPARAN, "NAME": NAME, "EQUAL": EQUAL, "NEWLINE": NEWLINE}
+# Windows uses \r\n, Linux uses \n and Mac uses \r
+regexs ={"NUMBER": r'\d+', "PLUS": r'\+', "MINUS": r'-', "MUL": r'\*', "DIV": r'/', "LPARAN": r'\(', "RPARAN": r'\)', "NAME": r"(?!\d+)\w+", "EQUAL": r'=', "NEWLINE": r'(\r\n|\r|\n)', "STRING": r"""(["'])(?:(?=(\\?))\2.)*?\1"""}
+
+IGNORE = r'(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)' # ignore everything in quotes, can be added to all regexs
+
+regexs = {k: re.compile(v + IGNORE) for k, v in regexs.items()}
 
 class TokenStream:
     """Behaves like a generator
@@ -57,13 +52,13 @@ class Tokenizer:
 
     def parse_line(self, line, lineo) -> typing.List[TokenInfo]:
         tokens = []
-        for i, regex in enumerate(ALL.values()):
+        for i, regex in enumerate(regexs.values()):
             pos = 0
             while True:
                 match = regex.search(line, pos)
                 if match:
                     pos = match.end()
-                    tokens.append(TokenInfo(getattr(Token, list(ALL.keys())[i]), match.group(0), line, lineo, match.start()))
+                    tokens.append(TokenInfo(getattr(Token, list(regexs.keys())[i]), match.group(0), line, lineo, match.start()))
                 else:
                     break
         tokens.sort(key=lambda x: x.column)
