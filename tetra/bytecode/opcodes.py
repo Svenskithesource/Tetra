@@ -14,6 +14,5 @@ class Opcode(Enum):
     LOAD_CONST = auto()
     STORE_VAR = auto()
     LOAD_VAR = auto()
-    STORE_STRING = auto()
     DUMP = auto()
 

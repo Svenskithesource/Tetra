@@ -74,7 +74,6 @@ class Parser:
         self.name = name
         self.constants = []
         self.vars = []
-        self.strings = []
         self.tokens = tokens
         self.cur_token = self.tokens.next()
     
@@ -101,7 +100,7 @@ class Parser:
         return node
 
     def factor(self):
-        """factor ::= INTEGER | LPAREN expr RPAREN | VAR"""
+        """factor ::= INTEGER | STRING | LPAREN expr RPAREN | VAR"""
         if self.cur_token.token_type == Token.NUMBER:
             if int(self.cur_token.value) not in self.constants:
                 self.constants.append(int(self.cur_token.value))
@@ -125,9 +124,12 @@ class Parser:
             except ValueError:
                 error("NameError", self.name, f"Variable '{value}' undefined", self.tokens.peek_old().line, self.tokens.peek_old().lineo, self.tokens.peek_old().column, self.repl)
         elif self.cur_token.token_type == Token.STRING:
+            
+            string = str(self.cur_token.value[1:-1]) # Remove the quotes
+            if string not in self.constants:
+                self.constants.append(string)
             self.eat(Token.STRING)
-            node = self.expr()
-            return node
+            return String(self.constants.index(string), string)
         else:
             error("SyntaxError", self.name, f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.repl)
         

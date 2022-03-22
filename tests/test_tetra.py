@@ -69,3 +69,6 @@ class TestTetra(unittest.TestCase):
     def test_empty_input(self):
         with self.assertRaises(SystemExit):
             tetra.Interpreter("").run()
+
+    def test_load_string(self):
+        self.assertEqual(tetra.Interpreter("\"Hello\"").run(), "Hello")
