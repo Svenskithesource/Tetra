@@ -33,7 +33,7 @@ class Parser(NodeVisitor):
             self.visit(child)
     
     def visit_String(self, node: String):
-        self.bytecode.append((Opcode.STORE_STRING, node.index))
+        self.bytecode.append((Opcode.LOAD_CONST, node.index))
     
     def visit_IntegerLiteral(self, node: IntegerLiteral):
         self.bytecode.append((Opcode.LOAD_CONST, node.index))
@@ -59,7 +59,8 @@ class Parser(NodeVisitor):
         self.bytecode.append((Opcode.DIV, None))
 
     def visit_Store(self, node: Store):
-        self.bytecode.append((Opcode.LOAD_CONST, node.index))
+        self.visit(node.value)
+        self.bytecode.append((Opcode.STORE_VAR, node.index))
 
     def visit_Load(self, node: Load):
         self.bytecode.append((Opcode.LOAD_VAR, node.index))
