@@ -35,6 +35,11 @@ class IntegerLiteral(AST):
         self.index = index
         self.value = value
 
+class String(AST):
+    def __init__(self, index, value: str):
+        self.index = index
+        self.value = value
+
 class Add(AST):
     def __init__(self, left: IntegerLiteral, right: IntegerLiteral):
         self.left = left
@@ -69,6 +74,7 @@ class Parser:
         self.name = name
         self.constants = []
         self.vars = []
+        self.strings = []
         self.tokens = tokens
         self.cur_token = self.tokens.next()
     
@@ -118,7 +124,10 @@ class Parser:
                     return Load(self.vars.index(value))
             except ValueError:
                 error("NameError", self.name, f"Variable '{value}' undefined", self.tokens.peek_old().line, self.tokens.peek_old().lineo, self.tokens.peek_old().column, self.repl)
-
+        elif self.cur_token.token_type == Token.STRING:
+            self.eat(Token.STRING)
+            node = self.expr()
+            return node
         else:
             error("SyntaxError", self.name, f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.repl)
         

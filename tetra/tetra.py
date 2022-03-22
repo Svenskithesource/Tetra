@@ -80,6 +80,8 @@ class Interpreter:
 
                 else:
                     self.stack.append(self.heap[opcode[1]])
+            elif opcode[0] == Opcode.STORE_STRING:
+                a = self.stack.pop()
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
         
