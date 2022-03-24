@@ -9,11 +9,11 @@ from .tokens import *
 import re, typing
 
 # Windows uses \r\n, Linux uses \n and Mac uses \r
-regexs ={"NUMBER": r'\d+', "PLUS": r'\+', "MINUS": r'-', "MUL": r'\*', "DIV": r'/', "LPARAN": r'\(', "RPARAN": r'\)', "NAME": r"(?!\d+)\w+", "EQUAL": r'=', "NEWLINE": r'(\r\n|\r|\n)', "STRING": r"""(["'])(?:(?=(\\?))\2.)*?\1"""}
+regexs ={"NUMBER": r'\d+', "PLUS": r'\+', "MINUS": r'-', "MUL": r'\*', "DIV": r'/', "LPARAN": r'\(', "RPARAN": r'\)', "NAME": r"(?!\d+)\w+", "EQUAL": r'=', "NEWLINE": r'(\r\n|\r|\n)', "STRING": r"""(["])(?:(?=(\\?))\2.)*?\1"""}
 
-IGNORE = r'(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)' # ignore everything in quotes, can be added to all regexs
+IGNORE = r"""(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)""" # ignore everything in quotes, can be added to all regexs except for STRING
 
-regexs = {k: re.compile(v + IGNORE) for k, v in regexs.items()}
+regexs = {k: re.compile(v + IGNORE if k != "STRING" else v) for k, v in regexs.items()}
 
 class TokenStream:
     """Behaves like a generator

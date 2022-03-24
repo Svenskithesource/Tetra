@@ -32,6 +32,9 @@ class Parser(NodeVisitor):
         for child in node.body:
             self.visit(child)
     
+    def visit_String(self, node: String):
+        self.bytecode.append((Opcode.LOAD_CONST, node.index))
+    
     def visit_IntegerLiteral(self, node: IntegerLiteral):
         self.bytecode.append((Opcode.LOAD_CONST, node.index))
     
