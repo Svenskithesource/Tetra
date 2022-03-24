@@ -34,6 +34,11 @@ class TestTetra(unittest.TestCase):
         interpreter.run()
         self.assertEqual(interpreter.heap[0], 1)
         self.assertEqual(interpreter.code.vars[0], "a")
+
+        interpreter = tetra.Interpreter('a = "hello"')
+        interpreter.run()
+        self.assertEqual(interpreter.heap[0], "hello")
+        self.assertEqual(interpreter.code.vars[0], "a")
     
     def test_mutliline(self):
         interpreter = tetra.Interpreter("1+ 1\n4*5")
@@ -52,6 +57,10 @@ class TestTetra(unittest.TestCase):
         result = interpreter.run()
         self.assertEqual(result, 2)
 
+        interpreter = tetra.Interpreter('a = "hello"\na')
+        result = interpreter.run()
+        self.assertEqual(result, "hello")
+
         interpreter = tetra.Interpreter("a = 1 + 1\nb")
         with self.assertRaises(SystemExit):
             interpreter.run()
@@ -62,6 +71,7 @@ class TestTetra(unittest.TestCase):
 
     def test_var_overwrite(self):
         self.assertEqual(tetra.Interpreter("a = 1\na = 2\na").run(), 2)
+        self.assertEqual(tetra.Interpreter('a = "hello"\na = "hi"\na').run(), "hi")
 
     def test_var_with_var(self):
         self.assertEqual(tetra.Interpreter("a = 1\na = a + 2\na").run(), 3)
