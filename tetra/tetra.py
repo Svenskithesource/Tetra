@@ -27,7 +27,7 @@ class Interpreter:
 
     def run(self):
         tokens = Tokenizer(self.source).tokenize()
-        print(tokens)
+
         parser = Parser(self.name, tokens, self.repl).parse()
 
         code = BytecodeParser(parser).parse()
