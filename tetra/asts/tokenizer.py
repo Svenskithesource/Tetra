@@ -4,12 +4,11 @@ An interpreted language
 Created by: svenskithesource (https://github.com/Svenskithesource), Jaxp (https://github.com/jaxp2)
 """
 
-from lib2to3.pgen2.token import NEWLINE
 from .tokens import *
 import re, typing
 
 # Windows uses \r\n, Linux uses \n and Mac uses \r
-regexs ={"NUMBER": r'\d+', "PLUS": r'\+', "MINUS": r'-', "MUL": r'\*', "DIV": r'/', "LPARAN": r'\(', "RPARAN": r'\)', "NAME": r"(?!\d+)\w+", "EQUAL": r'=', "NEWLINE": r'(\r\n|\r|\n)', "STRING": r"""(["])(?:(?=(\\?))\2.)*?\1"""}
+regexs ={"NUMBER": r'\d+', "PLUS": r'\+', "MINUS": r'-', "MUL": r'\*', "DIV": r'/', "LPARAN": r'\(', "RPARAN": r'\)', "LBRACE": r"\{", "RBRACE": r"\}", "NAME": r"(?!\d+)\w+", "EQUAL": r'=', "NEWLINE": r'(\r\n|\r|\n)', "STRING": r"""(["])(?:(?=(\\?))\2.)*?\1"""}
 
 IGNORE = r"""(?=([^"\\]*(\\.|"([^"\\]*\\.)*[^"\\]*"))*[^"]*$)""" # ignore everything in quotes, can be added to all regexs except for STRING
 
