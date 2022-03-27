@@ -98,7 +98,13 @@ class Parser:
             node = Store(self.vars.index(value), self.expr())
 
         return node
-
+    def condition_statement(self):
+        self.eat(Token.NAME)
+        print(self.cur_token.token_type)
+        self.eat(Token.LPARAN)
+        condition = self.expr()
+        
+        self.eat(Token.RPARAN)
     def factor(self):
         """factor ::= INTEGER | STRING | LPAREN expr RPAREN | VAR"""
         if self.cur_token.token_type == Token.NUMBER:
@@ -132,7 +138,7 @@ class Parser:
             return String(self.constants.index(string), string)
         else:
             error("SyntaxError", self.name, f"Expected INTEGER or ( or NAME, got {self.cur_token.token_type}", self.cur_token.line, self.cur_token.lineo, self.cur_token.column, self.repl)
-        
+
 
     def term(self):
         """term ::= factor { ('*'|'/') factor }"""
@@ -173,7 +179,10 @@ class Parser:
         if self.cur_token.token_type == Token.NAME:
             if self.tokens.peek().token_type == Token.EQUAL:
                 return self.assign()
+            elif self.tokens.peek().token_type == Token.LPARAN:
+                    return self.condition_statement()
             return self.expr()
+
         else:
             return self.expr()
 
