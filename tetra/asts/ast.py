@@ -21,6 +21,11 @@ class AST:
     def __repr__(self): # For when it's in a list or similar
         return str(self)
 
+class If(AST):
+    def __init__(self, condition, body):
+        self.condition = condition
+        self.body = body
+
 class Store(AST):
     def __init__(self, index, value):
         self.index = index
@@ -98,13 +103,8 @@ class Parser:
             node = Store(self.vars.index(value), self.expr())
 
         return node
-    def condition_statement(self):
-        self.eat(Token.NAME)
-        print(self.cur_token.token_type)
-        self.eat(Token.LPARAN)
-        condition = self.expr()
-        
-        self.eat(Token.RPARAN)
+    
+
     def factor(self):
         """factor ::= INTEGER | STRING | LPAREN expr RPAREN | VAR"""
         if self.cur_token.token_type == Token.NUMBER:
@@ -174,6 +174,21 @@ class Parser:
 
         return node
     
+    def condition_statement(self):
+        """condition_statement ::= "If" LPAREN expr RPAREN LBRACE program RBRACE"""
+        self.eat(Token.NAME)
+        self.eat(Token.LPARAN)
+
+        condition = self.expr()
+
+        self.eat(Token.RPARAN)
+        self.eat(Token.LBRACE)
+
+        body = self.program()
+
+        self.eat(Token.RBRACE)
+        return If(condition, body)
+
     def statement(self):
         """statement ::= assign | expr"""
         if self.cur_token.token_type == Token.NAME:
@@ -186,12 +201,16 @@ class Parser:
         else:
             return self.expr()
 
-    def parse(self):
+    def program(self):
+        """program ::= statement { '\\n' statement }"""
         nodes = [self.statement()]
         while self.cur_token.token_type == Token.NEWLINE:
             self.eat(Token.NEWLINE)
             if self.cur_token.token_type == Token.EOF:
                 break
             nodes.append(self.statement())
+        return nodes
+    def parse(self):
+        nodes = self.program()
         return Module(self.name, nodes, self.constants, self.vars)
     
