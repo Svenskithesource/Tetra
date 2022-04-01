@@ -65,7 +65,21 @@ class Parser(NodeVisitor):
     def visit_Load(self, node: Load):
         self.bytecode.append((Opcode.LOAD_VAR, node.index))
 
-    def parse(self) -> Code:
+    def visit_If(self, node: If):
+        self.visit(node.condition)
+
+        cur_index = len(self.bytecode)
+        self.bytecode.extend(Parser(Module("if", node.body, self.ast.constants, self.ast.vars)).get_bytecode()) # The body is a list so we reuse the parser
+
+        self.bytecode.insert(cur_index, (Opcode.JUMP_IF_FALSE, len(self.bytecode))) # Jump to one opcode after the end of the if statement
+        
+    def get_bytecode(self): # Put in a function so it can be used for if statements
         self.visit(self.ast)
+        return self.bytecode
+
+    def parse(self) -> Code:
+        self.get_bytecode()
+        if self.bytecode[-1][0] != Opcode.RETURN: # If the last opcode is not a return, add one. Necessary for jumps.
+            self.bytecode.append((Opcode.RETURN, None))
         return Code(self.ast.name, self.bytecode, self.ast.constants, self.ast.vars)
 

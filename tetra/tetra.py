@@ -36,7 +36,9 @@ class Interpreter:
         return self.execute()
 
     def execute(self):
-        for opcode in self.code.bytecode:
+        i = 0
+        while i < len(self.code.bytecode):
+            opcode = self.code.bytecode[i]
             if opcode[0] == Opcode.ADD:
                 a = self.stack.pop()
                 b = self.stack.pop()
@@ -82,6 +84,17 @@ class Interpreter:
                     self.stack.append(self.heap[opcode[1]])
             elif opcode[0] == Opcode.DUMP:
                 print(self.stack.pop())
+            elif opcode[0] == Opcode.JUMP_IF_FALSE:
+                if self.stack.pop() == 0:
+                    i = opcode[1]
+            elif opcode[0] == Opcode.RETURN:
+                return self.stack.pop() if self.stack else None # the last item on the stack is the result of the program, if the stack is empty return None
+            
+            i += 1
+
+           
+
+                    
         
-        return self.stack.pop() if self.stack else None # the last item on the stack is the result of the program, if the stack is empty return None
+       
             
