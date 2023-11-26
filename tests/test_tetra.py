@@ -83,4 +83,4 @@ class TestTetra(unittest.TestCase):
     def test_load_string(self):
         self.assertEqual(tetra.Interpreter("\"Hello\"").run(), "Hello")
     def test_braces(self):
-        self.assertEqual(tetra.Interpreter("if (0+1) {1 + 1}").run(), "2")
+        self.assertEqual(tetra.Interpreter("if (0+1) {1 + 1}").run(), 2)
